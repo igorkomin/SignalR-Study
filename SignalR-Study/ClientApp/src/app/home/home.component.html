@@ -1,0 +1,19 @@
+<div class="container" *ngIf="!isChatVisible">
+    <div class="row">
+        <div class="col-md-12">
+            Enter your name to start chatting
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" [(ngModel)]="userName"
+                    (keydown.enter)="showChat()">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (click)="showChat()" [disabled]="!userName">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-chat *ngIf="isChatVisible" [userName]="userName"></app-chat>

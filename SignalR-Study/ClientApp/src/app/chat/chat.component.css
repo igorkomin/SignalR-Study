@@ -1,0 +1,27 @@
+.message {
+    min-height: 50px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.sent {
+    color: white;
+    background-color: slateblue;
+}
+
+.received {
+    color: black;
+    background-color: lightgrey;
+}
+
+.message-input {
+    margin-top: 5px;
+}
+
+.user-list-item {
+    display: flex;
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+}

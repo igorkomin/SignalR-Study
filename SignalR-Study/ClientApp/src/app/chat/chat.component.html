@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Welcome, {{userName}}!</p>
+                    <hr />
+                </div>
+            </div>
+            <div class="row" *ngFor="let message of messages" [class.justify-content-end]="message.type === 'sent'"
+                [class.justify-content-center]="message.type === 'system'"
+                [class.justify-content-start]="message.type === 'received'">
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="small">
+                                <span *ngIf="message.userName">{{message.userName}},
+                                </span>{{message.date | date:'h:mm a'}}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12" [class.message]="message.type !== 'system'"
+                            [class.sent]="message.type === 'sent'" [class.received]="message.type === 'received'">
+                            {{message.text}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row message-input">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="messageText" (keydown.enter)="sendMessage()">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" (click)="sendMessage()"
+                            [disabled]="!messageText">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>Users online</p>
+                    <hr />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="list-group">
+                        <li class="list-group-item user-list-item" *ngFor="let user of users">
+                            <i class="material-icons mr-1">person</i>
+                            {{user.name}}
+                            <span *ngIf="user.connectionId == uniqueId"
+                                class="badge badge-pill badge-light ml-1">you</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
