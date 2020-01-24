@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SignalR_Study.Models
 {
@@ -9,5 +10,7 @@ namespace SignalR_Study.Models
         public string Type { get; set; }
         public string Text { get; set; }
         public DateTime Date { get; set; }
+
+        public List<ChatUser> Mentions { get; set; } = new List<ChatUser>();
     }
 }

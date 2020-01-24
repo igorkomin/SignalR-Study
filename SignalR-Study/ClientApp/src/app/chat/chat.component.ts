@@ -3,6 +3,7 @@ import { Message } from '../models/message';
 import { ChatService } from '../services/chat.service';
 import { Subscription } from 'rxjs';
 import { ChatUser } from '../models/chatUser';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-chat',
@@ -17,11 +18,14 @@ export class ChatComponent implements OnInit, OnDestroy {
   uniqueId: string;
   messages: Message[] = [];
   users: ChatUser[] = [];
+  mentions: ChatUser[] = [];
 
   messagesSubscription: Subscription;
   usersSubscripiton: Subscription;
 
-  constructor(private chatService: ChatService, private ngZone: NgZone) {
+  public recepient: ChatUser;
+
+  constructor(private chatService: ChatService, private ngZone: NgZone, private toastr: ToastrService) {
     this.receiveMessages();
     this.receiveUserList();
     this.uniqueId = this.chatService.connectionId;
@@ -43,10 +47,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     const message: Message = {
       date: new Date(),
       text: `${this.userName} has left this conversation`,
-      type: 'system'
+      type: 'system',
+      mentions: []
     };
     this.chatService.removeUser();
-    this.chatService.sendMessage(message);
+    this.chatService.sendMessage(message, []);
   }
 
   sendMessage() {
@@ -60,19 +65,42 @@ export class ChatComponent implements OnInit, OnDestroy {
       type: 'sent',
       text: this.messageText,
       date: new Date(),
+      mentions: this.mentions
     };
-    //this.uniqueId = uniqueId;
+
     this.messageText = '';
-    this.chatService.sendMessage(message);
+    this.chatService.sendMessage(message, this.mentions);
+    this.mentions = [];
+  }
+
+  addMention(user: ChatUser) {
+    const mention = this.mentions.find(x => x.connectionId === user.connectionId);
+    if (mention) {
+      return;
+    }
+    this.mentions.push(user);
+  }
+
+  removeMention(connectionId: string) {
+    const index = this.mentions.findIndex(x => x.connectionId === connectionId);
+    if (index === -1) {
+      return;
+    }
+    this.mentions.splice(index, 1);
   }
 
   private receiveMessages() {
     this.messagesSubscription = this.chatService.messageReceived.subscribe((message: Message) => {
+      console.log(message);
       this.ngZone.run(() => {
         if (message.clientUniqueId !== this.uniqueId && message.type !== 'system') {
           message.type = 'received';
         }
         this.messages.push(message);
+        const mention = message.mentions.find(x => x.connectionId === this.uniqueId);
+        if (mention) {
+          this.toastr.info(message.text, `${message.userName} mentioned you`);
+        }
       });
     });
   }

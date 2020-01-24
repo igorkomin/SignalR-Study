@@ -19,8 +19,8 @@ export class ChatService {
   constructor() {
   }
 
-  sendMessage(message: Message) {
-    this.hubConnection.invoke('SendMessage', message);
+  sendMessage(message: Message, mentions: ChatUser[]) {
+    this.hubConnection.invoke('SendMessage', message, mentions);
   }
 
   sendSystemMessage(message: Message) {
@@ -53,7 +53,8 @@ export class ChatService {
         const message: Message = {
           date: new Date(),
           text: `${userName} has joined this conversation`,
-          type: 'system'
+          type: 'system',
+          mentions: []
         };
         this.sendSystemMessage(message);
         this.getConnectionId();

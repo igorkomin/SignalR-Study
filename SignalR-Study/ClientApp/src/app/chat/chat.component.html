@@ -7,7 +7,7 @@
                     <hr />
                 </div>
             </div>
-            <div class="row" *ngFor="let message of messages" [class.justify-content-end]="message.type === 'sent'"
+            <div class="row mb-1" *ngFor="let message of messages" [class.justify-content-end]="message.type === 'sent'"
                 [class.justify-content-center]="message.type === 'system'"
                 [class.justify-content-start]="message.type === 'received'">
                 <div class="col-md-4">
@@ -28,12 +28,22 @@
                 </div>
             </div>
             <div class="row message-input">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <input type="text" class="form-control" [(ngModel)]="messageText" (keydown.enter)="sendMessage()">
                     <div class="input-group-append">
                         <button class="btn btn-outline-secondary" (click)="sendMessage()"
                             [disabled]="!messageText">Send</button>
                     </div>
+                </div>
+            </div>
+            <div class="row mt-1">
+                <div class="col-md-12">
+                    <mat-chip-list #chipList>
+                        <mat-chip *ngFor="let mention of mentions" (removed)="removeMention(mention.connectionId)">
+                            {{mention.name}}
+                            <mat-icon matChipRemove>cancel</mat-icon>
+                        </mat-chip>
+                    </mat-chip-list>
                 </div>
             </div>
         </div>
@@ -47,8 +57,9 @@
             <div class="row">
                 <div class="col-md-12">
                     <ul class="list-group">
-                        <li class="list-group-item user-list-item" *ngFor="let user of users">
-                            <i class="material-icons mr-1">person</i>
+                        <li class="list-group-item user-list-item" *ngFor="let user of users"
+                            (click)="addMention(user)">
+                            <mat-icon class="mr-1">person</mat-icon>
                             {{user.name}}
                             <span *ngIf="user.connectionId == uniqueId"
                                 class="badge badge-pill badge-light ml-1">you</span>

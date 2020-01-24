@@ -15,8 +15,9 @@ namespace SignalR_Study.Hubs
             return Context.ConnectionId;
         }
 
-        public async Task SendMessage(Message message)
+        public async Task SendMessage(Message message, List<ChatUser> mentions)
         {
+            message.Mentions = mentions;
             await Clients.All.SendAsync("MessageReceived", message);
         }
 
